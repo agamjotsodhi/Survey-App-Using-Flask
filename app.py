@@ -5,7 +5,6 @@ from surveys import satisfaction_survey as survey
 # an empty list that will hold user responses
 RESPONSES_KEY = "responses"
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "secret"
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
@@ -17,7 +16,6 @@ debug = DebugToolbarExtension(app)
 def show_survey_on_start():
     # select which survey to start with
     return render_template("first_survey.html", survey=survey)
-
 
 # Start survey
 @app.route("/start", methods=["POST"])
@@ -41,7 +39,7 @@ def handle_question():
     
     if (len(responses) == len(survey.questions)):
         # all questions have been completed
-        return redirect("/surveycomplete")
+        return redirect("/finish")
     else:
         return redirect(f"/questions/{len(responses)}")
     
@@ -56,7 +54,7 @@ def show_question(questionid):
 
     if (len(responses) == len(survey.questions)):
         # User finished survey.
-        return redirect("/endofsurvey")
+        return redirect("/finish")
 
     if (len(responses) != questionid):
         # Trying to access questions out of order.
@@ -67,9 +65,9 @@ def show_question(questionid):
     return render_template(
         "questions.html", question_num=questionid, question=question)
 
-@app.route("/complete")
-def completed_survey():
-    """Finished survey!"""
+@app.route("/finish")
+def finished():
+    """Survey complete. Show completion page."""
 
     return render_template("endofsurvey.html")
     
